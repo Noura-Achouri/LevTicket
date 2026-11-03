@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.ChatMapper">
+
+    <resultMap id="ChatMessageResultMap" type="ChatMessage">
+        <id property="id" column="id"/>
+        <result property="ticketId" column="ticket_id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="content" column="content"/>
+        <result property="read" column="is_read"/>
+        <result property="createTime" column="create_time"/>
+        <result property="senderUsername" column="sender_username"/>
+        <result property="senderAvatar" column="sender_avatar"/>
+        <result property="receiverUsername" column="receiver_username"/>
+        <result property="receiverAvatar" column="receiver_avatar"/>
+        <result property="ticketEventName" column="ticket_event_name"/>
+    </resultMap>
+
+    <resultMap id="ConversationResultMap" type="com.leviathan.bidpass.dto.ChatConversation">
+        <result property="partnerId" column="partner_id"/>
+        <result property="partnerUsername" column="partner_username"/>
+        <result property="partnerAvatar" column="partner_avatar"/>
+        <result property="ticketId" column="ticket_id"/>
+        <result property="ticketEventName" column="ticket_event_name"/>
+        <result property="lastMessage" column="last_message"/>
+        <result property="lastMessageTime" column="last_message_time"/>
+        <result property="outgoing" column="outgoing"/>
+        <result property="unread" column="unread"/>
+    </resultMap>
+
+    <sql id="MessageSelect">
+        SELECT m.*,
+               sender.username   AS sender_username,
+               sender.avatar_url AS sender_avatar,
+               receiver.username   AS receiver_username,
+               receiver.avatar_url AS receiver_avatar,
+               ticket.event_name AS ticket_event_name
+        FROM chat_message m
+        JOIN user sender ON sender.id = m.sender_id
+        JOIN user receiver ON receiver.id = m.receiver_id
+        LEFT JOIN ticket ON ticket.id = m.ticket_id
+    </sql>
+
+    <insert id="insert" parameterType="ChatMessage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat_message (ticket_id, sender_id, receiver_id, content, is_read)
+        VALUES (#{ticketId}, #{senderId}, #{receiverId}, #{content}, 0)
+    </insert>
+
+    <select id="findById" parameterType="Long" resultMap="ChatMessageResultMap">
+        <include refid="MessageSelect"/>
+        WHERE m.id = #{id}
+    </select>
+
+    <select id="findThread" resultMap="ChatMessageResultMap">
+        <include refid="MessageSelect"/>
+        WHERE (m.sender_id = #{userId} AND m.receiver_id = #{partnerId})
+           OR (m.sender_id = #{partnerId} AND m.receiver_id = #{userId})
+        ORDER BY m.create_time ASC, m.id ASC
+        LIMIT 300
+    </select>
+
+    <!--
+      Collapse the whole mailbox into one row per partner. The window functions
+      pick the newest message of each partner and count that partner's unread
+      messages in a single pass.
+    -->
+    <select id="findConversations" parameterType="Integer" resultMap="ConversationResultMap">
+        SELECT t.partner_id,
+               t.ticket_id,
+               t.content        AS last_message,
+               t.create_time    AS last_message_time,
+               t.outgoing,
+               t.unread,
+               partner.username   AS partner_username,
+               partner.avatar_url AS partner_avatar,
+               ticket.event_name  AS ticket_event_name
+        FROM (
+            SELECT
+                CASE WHEN m.sender_id = #{userId} THEN m.receiver_id ELSE m.sender_id END AS partner_id,
+                m.ticket_id,
+                m.content,
+                m.create_time,
+                CASE WHEN m.sender_id = #{userId} THEN 1 ELSE 0 END AS outgoing,
+                SUM(CASE WHEN m.receiver_id = #{userId} AND m.is_read = 0 THEN 1 ELSE 0 END)
+                    OVER (PARTITION BY CASE WHEN m.sender_id = #{userId} THEN m.receiver_id ELSE m.sender_id END) AS unread,
+                ROW_NUMBER() OVER (
+                    PARTITION BY CASE WHEN m.sender_id = #{userId} THEN m.receiver_id ELSE m.sender_id END
+                    ORDER BY m.create_time DESC, m.id DESC
+                ) AS rn
+            FROM chat_message m
+            WHERE m.sender_id = #{userId} OR m.receiver_id = #{userId}
+        ) t
+        JOIN user partner ON partner.id = t.partner_id
+        LEFT JOIN ticket ON ticket.id = t.ticket_id
+        WHERE t.rn = 1
+        ORDER BY t.create_time DESC
+    </select>
+
+    <select id="countUnread" parameterType="Integer" resultType="int">
+        SELECT COUNT(*) FROM chat_message WHERE receiver_id = #{userId} AND is_read = 0
+    </select>
+
+    <select id="countUnreadFrom" resultType="int">
+        SELECT COUNT(*) FROM chat_message
+        WHERE receiver_id = #{receiverId} AND sender_id = #{senderId} AND is_read = 0
+    </select>
+
+    <update id="markThreadRead">
+        UPDATE chat_message SET is_read = 1
+        WHERE receiver_id = #{userId} AND sender_id = #{partnerId} AND is_read = 0
+    </update>
+
+</mapper>

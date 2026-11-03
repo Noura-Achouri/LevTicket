@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.ReviewMapper">
+
+    <resultMap id="ReviewResultMap" type="Review">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="reviewerId" column="reviewer_id"/>
+        <result property="revieweeId" column="reviewee_id"/>
+        <result property="starRating" column="star_rating"/>
+        <result property="comment" column="comment"/>
+        <result property="createTime" column="create_time"/>
+        <result property="reviewerUsername" column="reviewer_username"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Review" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO review (order_id, reviewer_id, reviewee_id, star_rating, comment)
+        VALUES (#{orderId}, #{reviewerId}, #{revieweeId}, #{starRating}, #{comment})
+    </insert>
+
+    <select id="findByOrderIdAndReviewerId" resultMap="ReviewResultMap">
+        SELECT * FROM review
+        WHERE order_id = #{orderId} AND reviewer_id = #{reviewerId}
+    </select>
+
+    <select id="findByRevieweeId" parameterType="Integer" resultMap="ReviewResultMap">
+        SELECT review.*, reviewer.username AS reviewer_username
+        FROM review JOIN user reviewer ON reviewer.id = review.reviewer_id
+        WHERE reviewee_id = #{revieweeId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findByReviewerId" parameterType="Integer" resultMap="ReviewResultMap">
+        SELECT review.*, reviewee.username AS reviewer_username
+        FROM review JOIN user reviewee ON reviewee.id = review.reviewee_id
+        WHERE reviewer_id = #{reviewerId}
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

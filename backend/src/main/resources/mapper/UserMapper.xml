@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="passwordHash" column="password_hash"/>
+        <result property="phone" column="phone"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="bio" column="bio"/>
+        <result property="verificationStatus" column="verification_status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (username, email, password_hash, phone, verification_status)
+        VALUES (#{username}, #{email}, #{passwordHash}, #{phone}, 'unverified')
+    </insert>
+
+    <select id="findByEmail" parameterType="String" resultMap="UserResultMap">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <select id="findByUsername" parameterType="String" resultMap="UserResultMap">
+        SELECT * FROM user WHERE username = #{username}
+    </select>
+
+    <select id="findById" parameterType="Integer" resultMap="UserResultMap">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+
+    <select id="findTrustScore" parameterType="Integer" resultType="map">
+        SELECT score, total_auctions AS totalAuctions,
+               successful_auctions AS successfulAuctions, disputes
+        FROM trust_score WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateProfile" parameterType="User">
+        UPDATE user
+        SET bio = #{bio}, phone = #{phone}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAvatar">
+        UPDATE user SET avatar_url = #{avatarUrl,jdbcType=VARCHAR} WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.BidMapper">
+
+    <resultMap id="BidResultMap" type="Bid">
+        <id property="id" column="id"/>
+        <result property="auctionId" column="auction_id"/>
+        <result property="bidderId" column="bidder_id"/>
+        <result property="bidderUsername" column="bidder_username"/>
+        <result property="amount" column="amount"/>
+        <result property="bidTime" column="bid_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Bid" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO bid (auction_id, bidder_id, amount, bid_time)
+        VALUES (#{auctionId}, #{bidderId}, #{amount}, NOW())
+    </insert>
+
+    <select id="findByAuctionId" parameterType="Integer" resultMap="BidResultMap">
+        SELECT bid.*, bidder.username AS bidder_username
+        FROM bid JOIN user bidder ON bidder.id = bid.bidder_id
+        WHERE bid.auction_id = #{auctionId}
+        ORDER BY bid.amount DESC
+    </select>
+
+    <select id="findHighestBid" parameterType="Integer" resultMap="BidResultMap">
+        SELECT bid.*, bidder.username AS bidder_username
+        FROM bid JOIN user bidder ON bidder.id = bid.bidder_id
+        WHERE bid.auction_id = #{auctionId}
+        ORDER BY bid.amount DESC LIMIT 1
+    </select>
+
+    <select id="findSellerBidStats" parameterType="Integer" resultType="map">
+        SELECT DATE(b.bid_time) AS bidDate, COUNT(*) AS bidCount
+        FROM bid b
+        INNER JOIN auction a ON a.id = b.auction_id
+        INNER JOIN ticket t ON t.id = a.ticket_id
+        WHERE t.seller_id = #{sellerId}
+        GROUP BY DATE(b.bid_time)
+        ORDER BY bidDate ASC
+    </select>
+
+</mapper>

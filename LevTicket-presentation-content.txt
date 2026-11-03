@@ -1,0 +1,353 @@
+LEV TICKET PRESENTATION CONTENT
+Group 11
+
+Use the following text to replace the placeholder text in the presentation template.
+The shorter lines are intended for slide text. The speaker notes can be expanded during the presentation.
+
+============================================================
+PAGE 1 - TITLE PAGE
+============================================================
+
+LevTicket
+
+A secure online marketplace for buying, selling, and bidding on event tickets.
+
+LevTicket International Co.
+Group 11
+
+University Final Project
+
+Suggested subtitle:
+Discover events. Trade with confidence.
+
+============================================================
+PAGE 2 - REPORTERS / GROUP MEMBERS
+============================================================
+
+Group 11
+
+Project reporters:
+
+Hicham
+Group Leader
+
+Noura
+Member
+
+Orgil.N
+Member
+
+Orgil.O
+Member
+
+Suggested short introduction:
+We are Group 11, and our project is LevTicket, a web-based marketplace that connects people who want to buy and sell tickets for live events.
+
+============================================================
+PAGE 3 - INTRODUCTION
+============================================================
+
+Introduction
+
+LevTicket is a web-based ticket marketplace for concerts, sports events, festivals, theatre, and other live experiences.
+
+The platform helps users find tickets, compare listings, inspect seller information, place bids, publish tickets, review orders, and receive customer support in one place.
+
+The project was created to make ticket trading clearer, more organized, and more trustworthy than informal buying and selling through disconnected channels.
+
+Main idea:
+A single marketplace where buyers and sellers can manage the complete ticket experience.
+
+============================================================
+PAGE 4 - BACKGROUND AND TIMELINE
+============================================================
+
+Background
+
+Buying tickets through informal channels can create several problems:
+
+- Event information may be incomplete or difficult to compare.
+- Buyers may not know whether a seller is trustworthy.
+- Sellers may not have a structured way to publish ticket details.
+- Auction bids and order information may be difficult to track.
+- Users may not know where to get help when something goes wrong.
+
+LevTicket addresses these problems with searchable listings, seller profiles, trust scores, reviews, auctions, order history, and AI-assisted support.
+
+Timeline
+
+1. Identify the ticket marketplace problem.
+2. Define the buyer, seller, and administrator-related workflows.
+3. Design the frontend and backend architecture.
+4. Implement authentication and ticket browsing.
+5. Add ticket publishing, auctions, bidding, and orders.
+6. Add profiles, trust scores, reviews, and AI support.
+7. Test the main workflows and prepare the final demonstration.
+
+============================================================
+PAGE 5 - PROJECT OVERVIEW
+============================================================
+
+Overview
+
+Structure
+
+LevTicket uses a client-server architecture:
+
+- Vue 3 frontend for the browser interface.
+- Spring Boot backend for business logic and API services.
+- Database for users, tickets, auctions, bids, orders, reviews, and notifications.
+- Axios HTTP communication between the frontend and backend.
+
+Objectives
+
+- Make event tickets easy to discover and compare.
+- Give sellers a structured way to publish tickets.
+- Support auctions and secure bidding workflows.
+- Show seller trust information and reviews.
+- Help users manage orders, listings, and profiles.
+- Provide responsive access on desktop, tablet, and mobile screens.
+
+History / Project motivation
+
+The project began from a common marketplace problem: ticket buyers and sellers need a safer and more organized way to exchange tickets. LevTicket combines the most important marketplace functions into one application instead of forcing users to depend on separate platforms and informal messages.
+
+============================================================
+PAGE 6 - BENEFICIARIES, LOCATION, AND STRATEGIES
+============================================================
+
+Beneficiaries
+
+Buyers
+
+Buyers can search for events, compare ticket listings, inspect auction details, view seller trust information, place bids, and review their orders.
+
+Sellers
+
+Sellers can publish tickets with event details, seat information, prices, descriptions, and images. They can also manage active, sold, and expired listings.
+
+Event fans and communities
+
+People who follow concerts, sports, festivals, and theatre can find relevant opportunities in one marketplace.
+
+Project team and university
+
+The project demonstrates practical full-stack development, frontend architecture, API integration, authentication, responsive design, and database-backed workflows.
+
+Location
+
+LevTicket is a web application available through a browser. It is designed for users who need to trade event tickets across different locations and event categories.
+
+The development environment includes:
+
+- Vue frontend running with Vite.
+- Spring Boot backend running on localhost:8080 during development.
+- Database services connected through the project backend.
+
+Strategies
+
+- Use a simple search-first marketplace experience.
+- Present important ticket and auction information clearly.
+- Use seller profiles, trust scores, and reviews to support informed decisions.
+- Separate frontend views, API services, authentication state, and backend logic.
+- Use reusable components and responsive layouts.
+- Provide loading, empty, and error states so users understand what is happening.
+- Support mock data for demonstrations when the backend is unavailable.
+
+============================================================
+PAGE 7 - PROJECT PLAN
+============================================================
+
+Project Plan
+
+Planning and requirements
+
+Define the marketplace problem, user roles, core features, and main user journeys.
+
+Frontend plan
+
+Build the Vue 3 single-page application, shared navigation, reusable interface components, responsive layouts, and route-based views.
+
+Backend and data plan
+
+Connect the application to Spring Boot APIs and database services for users, tickets, auctions, bids, orders, reviews, trust scores, and notifications.
+
+Testing and delivery plan
+
+Test registration, login, browsing, ticket creation, bidding, order history, reviews, profile information, AI support, error states, and mobile layouts.
+
+Suggested project phases:
+
+Phase 1: Requirements and system design
+Phase 2: Authentication and marketplace browsing
+Phase 3: Ticket publishing and auction bidding
+Phase 4: Orders, profiles, reviews, and trust scores
+Phase 5: AI support, responsive improvements, and final testing
+
+============================================================
+PAGE 8 - PROCESS CYCLE
+============================================================
+
+Process
+
+Process Cycle
+
+1. Research the ticket marketplace problem.
+2. Identify user needs and define requirements.
+3. Design the system architecture and user flows.
+4. Implement the frontend, backend, and database features.
+5. Connect the frontend to the APIs.
+6. Test the complete buyer and seller journeys.
+7. Improve the interface based on testing.
+8. Demonstrate and document the final system.
+
+Research Problem
+
+How can a digital marketplace make event-ticket buying and selling more organized, transparent, and convenient for both buyers and sellers?
+
+Research Design
+
+We translated the problem into user journeys and implemented the most important actions as connected workflows instead of isolated pages.
+
+Data Collection
+
+The application collects the information required for each workflow, including event details, ticket categories, prices, bids, seller information, order status, reviews, and support conversations.
+
+Data Analysis
+
+The system uses listing data, auction data, order data, reviews, and trust information to help users understand ticket options and make better decisions.
+
+Literature / existing-system review
+
+The design was informed by common marketplace patterns such as search and filtering, seller profiles, status labels, order histories, ratings, and conversational customer support.
+
+============================================================
+PAGE 9 - PROJECT FOCUS
+============================================================
+
+Process
+
+Project Focus
+
+LevTicket focuses on five connected areas:
+
+1. Ticket discovery
+Users search, filter, sort, and browse available event tickets.
+
+2. Ticket selling
+Sellers create listings with event information, seat details, prices, descriptions, and images.
+
+3. Auctions and bidding
+Buyers inspect current bids, bid history, auction end times, and place bids through the application.
+
+4. Trust and order management
+Users view profiles, trust scores, reviews, bought orders, sold orders, and listing statuses.
+
+5. Customer assistance
+Users receive help through the AI assistant and customer-service chat interface.
+
+Suggested visual percentages for this page:
+Ticket discovery - 20%
+Ticket selling - 20%
+Auctions and bidding - 20%
+Trust and orders - 20%
+Customer assistance - 20%
+
+These percentages represent the project focus areas, not measured user statistics.
+
+============================================================
+PAGE 10 - PROCESS NEEDS
+============================================================
+
+Process Needs
+
+First Requirement: A clear marketplace
+
+Users need a simple way to discover available tickets. The system provides a home page, keyword search, categories, sorting, ticket cards, and detailed auction pages.
+
+Second Requirement: A trustworthy transaction experience
+
+Users need enough information to make informed decisions. The system shows seller profiles, trust scores, reviews, bid history, auction timing, order information, and listing status.
+
+Third Requirement: Complete buyer and seller workflows
+
+Buyers can browse, bid, and review orders. Sellers can publish tickets and manage active, sold, and expired listings.
+
+Fourth Requirement: Reliable technical structure
+
+The frontend separates views, reusable components, API modules, routing, and authentication state. This makes the application easier to maintain and extend.
+
+Fifth Requirement: Help and feedback
+
+The interface provides loading messages, empty states, error messages, notifications, and AI-assisted customer support so users are not left without guidance.
+
+============================================================
+PAGE 11 - CONCLUSION
+============================================================
+
+Conclusion
+
+LevTicket brings ticket discovery, ticket selling, auctions, bidding, orders, profiles, reviews, trust scores, notifications, and AI support into one web application.
+
+The project demonstrates how a full-stack system can turn a real marketplace problem into connected and user-friendly workflows.
+
+Main achievements:
+
+- Built a Vue 3 single-page marketplace interface.
+- Connected the frontend to Spring Boot APIs.
+- Implemented authentication and protected user actions.
+- Added search, filtering, sorting, ticket publishing, auctions, and bidding.
+- Added orders, profiles, reviews, seller trust information, and notifications.
+- Added AI-assisted customer support.
+- Designed the application for responsive use across screen sizes.
+
+Final message:
+LevTicket makes ticket trading easier to discover, easier to manage, and more transparent for everyone involved.
+
+============================================================
+PAGE 12 - REFERENCES / SOURCES
+============================================================
+
+Sources
+
+01. Vue.js Documentation
+https://vuejs.org/guide/
+
+02. Vite Documentation
+https://vite.dev/guide/
+
+03. Vue Router Documentation
+https://router.vuejs.org/
+
+04. Pinia Documentation
+https://pinia.vuejs.org/
+
+05. Axios Documentation
+https://axios-http.com/docs/intro
+
+06. Element Plus Documentation
+https://element-plus.org/en-US/
+
+07. Spring Boot Documentation
+https://spring.io/projects/spring-boot
+
+08. LevTicket project source code and API implementation
+Internal project repository, Group 11
+
+09. LevTicket frontend architecture and API documentation
+Internal project documentation, Group 11
+
+10. LevTicket user flows and testing notes
+Internal project documentation, Group 11
+
+============================================================
+OPTIONAL SHORT PRESENTATION INTRODUCTION
+============================================================
+
+Good morning. We are Group 11, and our project is LevTicket. LevTicket is an online marketplace that helps users discover, buy, sell, and bid on tickets for live events. Our goal is to make ticket trading more organized and trustworthy by combining search, auctions, seller profiles, reviews, orders, notifications, and AI customer support in one platform.
+
+============================================================
+OPTIONAL SHORT PRESENTATION CONCLUSION
+============================================================
+
+To conclude, LevTicket is more than a ticket listing page. It is a complete marketplace workflow for buyers and sellers. The system connects discovery, publishing, bidding, trust information, orders, reviews, and support in one responsive application. Thank you.

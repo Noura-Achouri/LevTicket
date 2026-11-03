@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="Order">
+        <id property="id" column="id"/>
+        <result property="auctionId" column="auction_id"/>
+        <result property="ticketId" column="ticket_id"/>
+        <result property="buyerId" column="buyer_id"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="finalPrice" column="final_price"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="ticketEventName" column="ticket_event_name"/>
+        <result property="sellerUsername" column="seller_username"/>
+        <result property="reviewLeft" column="review_left"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (auction_id, buyer_id, seller_id, final_price, status)
+        VALUES (#{auctionId}, #{buyerId}, #{sellerId}, #{finalPrice}, 'pending')
+    </insert>
+
+    <select id="findById" parameterType="Integer" resultMap="OrderResultMap">
+        SELECT o.*, a.ticket_id AS ticket_id, t.event_name AS ticket_event_name, seller.username AS seller_username,
+             EXISTS (SELECT 1 FROM review r WHERE r.order_id = o.id AND r.reviewer_id = o.buyer_id) AS review_left
+         FROM orders o
+         JOIN auction a ON a.id = o.auction_id
+         JOIN ticket t ON t.id = a.ticket_id
+         JOIN user seller ON seller.id = o.seller_id
+         WHERE o.id = #{id}
+    </select>
+
+    <select id="findByAuctionId" parameterType="Integer" resultMap="OrderResultMap">
+        SELECT o.*, a.ticket_id AS ticket_id, t.event_name AS ticket_event_name, seller.username AS seller_username,
+             EXISTS (SELECT 1 FROM review r WHERE r.order_id = o.id AND r.reviewer_id = o.buyer_id) AS review_left
+         FROM orders o
+         JOIN auction a ON a.id = o.auction_id
+         JOIN ticket t ON t.id = a.ticket_id
+         JOIN user seller ON seller.id = o.seller_id
+         WHERE o.auction_id = #{auctionId}
+    </select>
+
+    <select id="findByBuyerId" parameterType="Integer" resultMap="OrderResultMap">
+        SELECT o.*, a.ticket_id AS ticket_id, t.event_name AS ticket_event_name, seller.username AS seller_username,
+             EXISTS (SELECT 1 FROM review r WHERE r.order_id = o.id AND r.reviewer_id = o.buyer_id) AS review_left
+         FROM orders o
+         JOIN auction a ON a.id = o.auction_id
+         JOIN ticket t ON t.id = a.ticket_id
+         JOIN user seller ON seller.id = o.seller_id
+         WHERE o.buyer_id = #{buyerId}
+         ORDER BY o.create_time DESC
+    </select>
+
+    <select id="findBySellerId" parameterType="Integer" resultMap="OrderResultMap">
+        SELECT o.*, a.ticket_id AS ticket_id, t.event_name AS ticket_event_name, seller.username AS seller_username,
+             EXISTS (SELECT 1 FROM review r WHERE r.order_id = o.id AND r.reviewer_id = o.buyer_id) AS review_left
+         FROM orders o
+         JOIN auction a ON a.id = o.auction_id
+         JOIN ticket t ON t.id = a.ticket_id
+         JOIN user seller ON seller.id = o.seller_id
+         WHERE o.seller_id = #{sellerId}
+         ORDER BY o.create_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE orders SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

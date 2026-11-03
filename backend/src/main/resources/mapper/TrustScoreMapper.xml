@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.TrustScoreMapper">
+
+    <resultMap id="TrustScoreResultMap" type="TrustScore">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="score" column="score"/>
+        <result property="totalAuctions" column="total_auctions"/>
+        <result property="successfulAuctions" column="successful_auctions"/>
+        <result property="disputes" column="disputes"/>
+        <result property="lastUpdated" column="last_updated"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="TrustScore" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO trust_score (user_id, score, total_auctions, successful_auctions, disputes, last_updated)
+        VALUES (#{userId}, 0, 0, 0, 0, NOW())
+    </insert>
+
+    <select id="findByUserId" parameterType="Integer" resultMap="TrustScoreResultMap">
+        SELECT * FROM trust_score WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateScore">
+        UPDATE trust_score
+        SET score = #{score},
+            total_auctions = #{totalAuctions},
+            successful_auctions = #{successfulAuctions},
+            disputes = #{disputes},
+            last_updated = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="adjustScore">
+        UPDATE trust_score
+        SET score = #{score}, last_updated = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

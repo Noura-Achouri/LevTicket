@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.WatchlistMapper">
+
+    <resultMap id="WatchedTicketResultMap" type="Ticket">
+        <id property="id" column="id"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="sellerUsername" column="seller_username"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="eventName" column="event_name"/>
+        <result property="eventDate" column="event_date"/>
+        <result property="eventLocation" column="event_location"/>
+        <result property="seatInfo" column="seat_info"/>
+        <result property="description" column="description"/>
+        <result property="startPrice" column="start_price"/>
+        <result property="status" column="status"/>
+        <result property="auctionStatus" column="auction_status"/>
+        <result property="auctionEndTime" column="auction_end_time"/>
+        <result property="tags" column="tags"/>
+        <result property="createTime" column="create_time"/>
+        <collection property="imageUrls" ofType="String" column="id"
+                select="com.leviathan.bidpass.mapper.TicketMapper.findImageUrlsByTicketId"/>
+    </resultMap>
+
+    <!-- Idempotent: watching an already-watched ticket is a no-op. -->
+    <insert id="insert">
+        INSERT IGNORE INTO watchlist (user_id, ticket_id)
+        VALUES (#{userId}, #{ticketId})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM watchlist
+        WHERE user_id = #{userId} AND ticket_id = #{ticketId}
+    </delete>
+
+    <select id="exists" resultType="int">
+        SELECT COUNT(*) FROM watchlist
+        WHERE user_id = #{userId} AND ticket_id = #{ticketId}
+    </select>
+
+    <select id="findTicketIdsByUserId" parameterType="Integer" resultType="int">
+        SELECT ticket_id FROM watchlist
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findWatchedTickets" parameterType="Integer" resultMap="WatchedTicketResultMap">
+        SELECT ticket.*, seller.username AS seller_username,
+               auction.status AS auction_status, auction.end_time AS auction_end_time
+        FROM watchlist
+        JOIN ticket ON ticket.id = watchlist.ticket_id
+        JOIN user seller ON seller.id = ticket.seller_id
+        JOIN auction ON auction.ticket_id = ticket.id
+        WHERE watchlist.user_id = #{userId}
+        ORDER BY watchlist.create_time DESC
+    </select>
+
+    <select id="countByTicketId" parameterType="Integer" resultType="int">
+        SELECT COUNT(*) FROM watchlist WHERE ticket_id = #{ticketId}
+    </select>
+
+    <select id="findWatcherIdsByTicketId" parameterType="Integer" resultType="int">
+        SELECT user_id FROM watchlist WHERE ticket_id = #{ticketId}
+    </select>
+
+</mapper>

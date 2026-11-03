@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build files
+dist/
+frontend/dist/
+target/
+*.jar
+BOOT-INF/
+
+# Secrets
+.env
+.env.*
+!.env.example
+ai-key.txt
+*.key
+*credentials*
+
+# Logs
+*.log
+hs_err_pid*
+replay_pid*
+
+# IDE
+.idea/
+.vscode/
+.codebuddy/
+
+# User uploads
+backend/uploads/
+
+# Temporary and private files
+cloudflared-diag-*.zip
+chat.yaml
+chat-copy.png
+after-msg.yaml
+login.yaml
+snap.yaml
+structure.txt
+wsl
+
+backend/src/main/resources/application.yml
+docker-compose.yml

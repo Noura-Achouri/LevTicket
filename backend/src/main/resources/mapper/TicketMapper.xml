@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leviathan.bidpass.mapper.TicketMapper">
+
+    <resultMap id="TicketResultMap" type="Ticket">
+        <id property="id" column="id"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="sellerUsername" column="seller_username"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="eventName" column="event_name"/>
+        <result property="eventDate" column="event_date"/>
+        <result property="eventLocation" column="event_location"/>
+        <result property="seatInfo" column="seat_info"/>
+        <result property="description" column="description"/>
+        <result property="startPrice" column="start_price"/>
+        <result property="status" column="status"/>
+        <result property="auctionStatus" column="auction_status"/>
+        <result property="auctionEndTime" column="auction_end_time"/>
+        <result property="tags" column="tags"/>
+        <result property="createTime" column="create_time"/>
+        <collection property="imageUrls" ofType="String" column="id"
+                select="findImageUrlsByTicketId"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ticket (seller_id, category_id, event_name, event_date, event_location,
+                           seat_info, description, start_price, status, tags)
+        VALUES (#{sellerId}, #{categoryId}, #{eventName}, #{eventDate}, #{eventLocation},
+                #{seatInfo}, #{description}, #{startPrice}, 'active', #{tags})
+    </insert>
+
+    <select id="findById" parameterType="Integer" resultMap="TicketResultMap">
+         SELECT ticket.*, seller.username AS seller_username,
+             auction.status AS auction_status, auction.end_time AS auction_end_time
+         FROM ticket
+         JOIN user seller ON seller.id = ticket.seller_id
+         JOIN auction ON auction.ticket_id = ticket.id
+        WHERE ticket.id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="TicketResultMap">
+                SELECT ticket.*, seller.username AS seller_username,
+                             auction.status AS auction_status, auction.end_time AS auction_end_time
+                FROM ticket
+                JOIN user seller ON seller.id = ticket.seller_id
+                JOIN auction ON auction.ticket_id = ticket.id
+        <where>
+            ticket.status = 'active'
+            <if test="keyword != null and keyword != ''">
+                AND event_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="location != null and location != ''">
+                AND event_location LIKE CONCAT('%', #{location}, '%')
+            </if>
+            <if test="tag != null and tag != ''">
+                AND tags LIKE CONCAT('%', #{tag}, '%')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == 'price_asc'">ORDER BY start_price ASC</when>
+            <when test="sort == 'price_desc'">ORDER BY start_price DESC</when>
+            <otherwise>ORDER BY create_time DESC</otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+                SELECT COUNT(*) FROM ticket
+                JOIN auction ON auction.ticket_id = ticket.id
+        <where>
+            ticket.status = 'active'
+            <if test="keyword != null and keyword != ''">
+                AND event_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="location != null and location != ''">
+                AND event_location LIKE CONCAT('%', #{location}, '%')
+            </if>
+            <if test="tag != null and tag != ''">
+                AND tags LIKE CONCAT('%', #{tag}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findBySellerId" resultMap="TicketResultMap">
+        SELECT ticket.*, seller.username AS seller_username
+        FROM ticket JOIN user seller ON seller.id = ticket.seller_id
+        <where>
+            ticket.seller_id = #{sellerId}
+            <if test="status != null and status != ''">
+                <choose>
+                    <when test="status == 'expired'">
+                        AND ticket.status = 'active'
+                        AND EXISTS (
+                            SELECT 1 FROM auction a
+                            WHERE a.ticket_id = ticket.id
+                              AND a.status = 'ongoing'
+                              AND a.end_time &lt;= CURRENT_TIMESTAMP
+                        )
+                    </when>
+                    <when test="status == 'active'">
+                        AND ticket.status = 'active'
+                        AND EXISTS (
+                            SELECT 1 FROM auction a
+                            WHERE a.ticket_id = ticket.id
+                              AND a.status = 'ongoing'
+                              AND a.end_time &gt; CURRENT_TIMESTAMP
+                        )
+                    </when>
+                    <otherwise>AND ticket.status = #{status}</otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findImageUrlsByTicketId" parameterType="Integer" resultType="String">
+        SELECT image_url FROM ticket_image
+        WHERE ticket_id = #{ticketId} AND is_private = 0
+        ORDER BY sort_order, id
+    </select>
+
+    <select id="findPrivateImageUrlsByTicketId" parameterType="Integer" resultType="String">
+        SELECT image_url FROM ticket_image
+        WHERE ticket_id = #{ticketId} AND is_private = 1
+        ORDER BY sort_order, id
+    </select>
+
+    <insert id="insertImage">
+        INSERT INTO ticket_image (ticket_id, image_url, is_private, sort_order)
+        SELECT #{ticketId}, #{imageUrl}, #{isPrivate}, COALESCE(MAX(sort_order), -1) + 1
+        FROM ticket_image WHERE ticket_id = #{ticketId}
+    </insert>
+
+    <delete id="deleteByIdAndSellerId">
+        DELETE FROM ticket
+        WHERE id = #{id} AND seller_id = #{sellerId} AND status = 'active'
+    </delete>
+
+    <update id="updateStatus">
+        UPDATE ticket SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,217 @@
+:root {
+  --brand-900: #0f172a;
+  --brand-800: #1e293b;
+  --brand-700: #2563eb;
+  --brand-600: #3b82f6;
+  --brand-100: #eff6ff;
+  --slate-900: #111827;
+  --slate-700: #475467;
+  --slate-500: #667085;
+  --slate-300: #d0d5dd;
+  --slate-200: #e4e7ec;
+  --slate-100: #f2f4f7;
+  --white: #ffffff;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.08);
+  --shadow-strong: 0 24px 48px rgba(15, 23, 42, 0.14);
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+
+  /* ---- Semantic theme tokens (light) ---- */
+  --app-bg: linear-gradient(180deg, #f4f7fb 0%, #eef4fb 100%);
+  --surface: #ffffff;
+  --surface-2: #f7faff;
+  --surface-muted: #f2f4f7;
+  --surface-elevated: #ffffff;
+  --border-color: rgba(208, 213, 221, 0.7);
+  --border-soft: rgba(148, 163, 184, 0.28);
+  --text-strong: #111827;
+  --text-body: #475467;
+  --text-muted: #667085;
+  --text-soft: #98a2b3;
+  --divider: #eef2f6;
+}
+
+html.dark {
+  --brand-900: #e2e8f0;
+  --brand-800: #cbd5e1;
+  --brand-100: #1e293b;
+  --slate-900: #e2e8f0;
+  --slate-700: #cbd5e1;
+  --slate-500: #94a3b8;
+  --slate-300: #334155;
+  --slate-200: #263449;
+  --slate-100: #16233a;
+  --white: #111c2f;
+  --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-strong: 0 24px 48px rgba(0, 0, 0, 0.55);
+
+  --app-bg: linear-gradient(180deg, #0a1120 0%, #0f172a 100%);
+  --surface: #111c2f;
+  --surface-2: #16233a;
+  --surface-muted: #1b2942;
+  --surface-elevated: #172438;
+  --border-color: rgba(148, 163, 184, 0.22);
+  --border-soft: rgba(148, 163, 184, 0.18);
+  --text-strong: #e6edf6;
+  --text-body: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-soft: #7c8aa0;
+  --divider: rgba(148, 163, 184, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, 'Segoe UI', Roboto, sans-serif;
+  background: var(--app-bg);
+  color: var(--text-strong);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  transition: all 0.2s ease;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+.el-card {
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.el-button {
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.el-button--primary {
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+  border: none;
+}
+
+.el-button--primary:hover {
+  filter: brightness(1.02);
+}
+
+.el-input__wrapper,
+.el-select .el-input__wrapper,
+.el-textarea__inner {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  border-radius: 12px;
+}
+
+.el-tag {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.page-shell {
+  width: 100%;
+}
+
+.marketplace-page,
+.results-page,
+.auth-shell,
+.page {
+  width: 100%;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  min-height: 78vh;
+  gap: 24px;
+  /* stretch so the two panels share one height — the brand panel is the
+     taller of the two, and centering left the other one visibly short */
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Generic surface helpers reused across pages ---- */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ---- Dark-theme corrections for hardcoded light surfaces ---- */
+html.dark .site-header {
+  background:
+    radial-gradient(130% 200% at 50% -60%, rgba(59, 130, 246, 0.22), transparent 55%),
+    linear-gradient(180deg, rgba(17, 28, 47, 0.98) 0%, rgba(13, 22, 40, 0.96) 100%) !important;
+  border-bottom-color: var(--border-soft);
+}
+
+html.dark .brand,
+html.dark .main-nav {
+  background: var(--surface) !important;
+  border-color: var(--border-color);
+}
+
+html.dark .nav-link {
+  color: var(--text-body);
+}
+
+html.dark .nav-link:hover {
+  color: var(--text-strong);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface-muted));
+}
+
+html.dark .nav-button.secondary,
+html.dark .notification-button {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface-muted));
+  color: var(--text-body);
+  border-color: var(--border-color);
+}
+
+html.dark .notification-item.unread {
+  background: rgba(37, 99, 235, 0.16);
+}
+
+html.dark .notification-item span {
+  color: var(--text-muted);
+}
